@@ -3,26 +3,28 @@ package com.example.calculatorfx;
 import javafx.scene.Parent;
 
 public class Calculator extends Parent {
-    protected double firstNumb=0;
-    private double secondNumb;
-    String operation ="";
+    protected Double firstNumb = Double.valueOf(0);
+    String operation = null;
+    private Double secondNumb;
 
-
-
-    public double getFirstNumb() {
+    public Double getFirstNumb() {
+        System.out.println("firstNumb: " + firstNumb);
         return firstNumb;
     }
 
-    public void setFirstNumb(double firstNumb) {
+    public Calculator setFirstNumb(Double firstNumb) {
         this.firstNumb = firstNumb;
+        return this;
     }
 
-    public double getSecondNumb() {
+    public Double getSecondNumb() {
+        System.out.println("secondNumb: " + secondNumb);
         return secondNumb;
     }
 
-    public void setSecondNumb(double secondNumb) {
+    public Calculator setSecondNumb(Double secondNumb) {
         this.secondNumb = secondNumb;
+        return this;
     }
 
     public String getOperation() {

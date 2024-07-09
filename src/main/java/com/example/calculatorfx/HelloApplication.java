@@ -1,8 +1,6 @@
 package com.example.calculatorfx;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,17 +12,26 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import static java.awt.SystemColor.text;
-import static org.controlsfx.control.action.ActionUtils.createButton;
-
 public class HelloApplication extends Application {
 
     private TextField display ;
+    Calculator calculator = null;
 
+    public static void main(String[] args) {
+        HelloApplication helloApplication = new HelloApplication();
+        launch(args);
+    }
+
+//    private void performOperation(String operator) {
+//         firstNumb = Double.parseDouble(display.getText());
+//         operator = op ;
+//        display.clear();
+//
+//    }
 
     @Override
     public void start(Stage stage) throws IOException {
-        Calculator calculator = new Calculator();
+        calculator = new Calculator();
         GridPane root = new GridPane();
         root.setAlignment(Pos.CENTER);
         root.setHgap(10);
@@ -45,28 +52,6 @@ public class HelloApplication extends Application {
         Button button8 = createNumberButton("8");
         Button button9 = createNumberButton("9");
         Button button0 = createNumberButton("0");
-
-//        createButton("+", e -> {
-//            Button btn = (Button) e.getSource();
-//            String buttonText = btn.getText();
-//            performOperation(buttonText);
-//        }),
-//                createButton("-", e -> {
-//                    Button btn = (Button) e.getSource();
-//                    String buttonText = btn.getText();
-//                    performOperation(buttonText);
-//                }),
-//                createButton("*", e -> {
-//                    Button btn = (Button) e.getSource();
-//                    String buttonText = btn.getText();
-//                    performOperation(buttonText);
-//                }),
-//                createButton("/", e -> {
-//                    Button btn = (Button) e.getSource();
-//                    String buttonText = btn.getText();
-//                    performOperation(buttonText);
-//                }),
-//                createButton("=", e -> calculateResult();
 
         Button buttonAdd = createButton("+" );
         Button buttonSubtract = createButton("-");
@@ -89,7 +74,7 @@ public class HelloApplication extends Application {
         GridPane.setConstraints(row2, 0, 2);
         GridPane.setConstraints(row3, 0, 3);
         GridPane.setConstraints(row4, 0, 4);
-        
+
         root.getChildren().addAll(display, row1, row2, row3, row4);
         root.setAlignment(Pos.CENTER);
         Scene scene = new Scene(root, 400, 400);
@@ -97,16 +82,17 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
-//    private void performOperation(String operator) {
-//         firstNumb = Double.parseDouble(display.getText());
-//         operator = op ;
-//        display.clear();
-//
-//    }
-
     private Button createButton(String text) {
         Button button = new Button(text);
-       // button.setOnAction(action);
+        button.setOnAction(actionEvent -> {
+            if (text == "=") {
+                calculateResult();
+            }
+            if (calculator.getFirstNumb() != null) {
+                display.setText(display.getText() + text);
+                calculator.setOperation(text);
+            }
+        });
         button.setStyle("-fx-background-color: #77b2b0; -fx-text-fill: white; -fx-font-size: 30;");
         return button;
     }
@@ -114,37 +100,39 @@ public class HelloApplication extends Application {
     private Button createNumberButton(String text) {
         Button button = new Button(text);
         button.setStyle("-fx-background-color: #77b2b0; -fx-text-fill: white; -fx-font-size: 30;");
+
         button.setOnAction(e -> {
             if (display.getText().equals("0")) {
                 display.setText(text);
             } else {
                 display.setText(display.getText() + text);
             }
+            if (calculator.getOperation() != null) {
+                String allText = display.getText();
+                String[] parts = allText.split("\\D", 2);
+
+                String secondPart = parts[1];
+
+                calculator.setSecondNumb(Double.parseDouble(secondPart));
+                calculator.getSecondNumb();
+            } else {
+                calculator.setFirstNumb(Double.parseDouble(display.getText()));
+                calculator.getFirstNumb();
+            }
         });
         return button;
     }
 
-//    private Button createOperationButton(String text, String operation,  calculator) {
-//        Button button = new Button(text);
-//        button.setOnAction(e -> {
-//            if (!display.getText().isEmpty()) {
-//                double value = Double.parseDouble(display.getText());
-//                calculator.setFirstNumb(value);
-//                calculator.setOperation(operation);
-//                display.setText("");
-//            }
-//        });
-//        return button;
-//    }
 
     private void calculateResult() {
-        Calculator calculator =new Calculator();
         if (!display.getText().isEmpty()) {
-            double secondNumb = Double.parseDouble(display.getText());
-            calculator.setSecondNumb(secondNumb);
             double result = calculator.calculate();
             display.setText(String.valueOf(result));
         }
+        calculator.setFirstNumb(null);
+        calculator.setOperation(null);
+        calculator.setSecondNumb(null);
+       // clearDisplay();
     }
 
     private void clearDisplay() {
@@ -152,8 +140,8 @@ public class HelloApplication extends Application {
         Calculator calculator = new Calculator(); // Reset calculator
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    public void test(Calculator calculator) {
+        System.out.println("sdvdsvdsv");
     }
 }
 
